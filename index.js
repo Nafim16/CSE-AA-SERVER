@@ -86,7 +86,7 @@ async function run() {
                     post: updatedNews.post
                 }
             }
-            const result = await article.updateOne(filter, update, options);
+            const result = await news.updateOne(filter, update, options);
             res.send(result);
         })
 
