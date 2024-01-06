@@ -45,6 +45,26 @@ async function run() {
             const result = await cursor.toArray();
             res.send(result);
         })
+        //for updating
+        app.get('/user/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: new ObjectId(id) }
+            const result = await user.findOne(query);
+            res.send(result);
+        })
+        app.put('/user/:id', async (req, res) => {
+            const id = req.params.id;
+            const filter = { _id: new ObjectId(id) }
+            const options = { upsert: true };
+            const updatedUser = req.body;
+            const update = {
+                $set:{
+                    role: updatedUser.role
+                }
+            }
+            const result = await user.updateOne(filter, update, options);
+            res.send(result);
+        })
 
         //News Section
         //------------
