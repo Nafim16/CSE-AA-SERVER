@@ -52,6 +52,19 @@ async function run() {
             const result = await user.findOne(query);
             res.send(result);
         })
+        // app.put('/user/:id', async (req, res) => {
+        //     const id = req.params.id;
+        //     const filter = { _id: new ObjectId(id) }
+        //     const options = { upsert: true };
+        //     const updatedUser = req.body;
+        //     const update = {
+        //         $set:{
+        //             role: updatedUser.role
+        //         }
+        //     }
+        //     const result = await user.updateOne(filter, update, options);
+        //     res.send(result);
+        // })
         app.put('/user/:id', async (req, res) => {
             const id = req.params.id;
             const filter = { _id: new ObjectId(id) }
@@ -59,6 +72,12 @@ async function run() {
             const updatedUser = req.body;
             const update = {
                 $set:{
+                    name: updatedUser.name,
+                    batch: updatedUser.batch,
+                    phone: updatedUser.phone,
+                    gender: updatedUser.gender,
+                    blood: updatedUser.blood,
+                    city: updatedUser.city,
                     role: updatedUser.role
                 }
             }
