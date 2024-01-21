@@ -186,7 +186,7 @@ async function run() {
                     approval: articleApprove.approval
                 }
             };
-            const result = await news.updateOne(filter, updateApprove);
+            const result = await article.updateOne(filter, updateApprove);
             res.send(result);
         })
 
@@ -247,10 +247,10 @@ async function run() {
             console.log(jobApprove);
             const updateApprove = {
                 $set: {
-                    approval: jonApprove.approval
+                    approval: jobApprove.approval
                 }
             };
-            const result = await news.updateOne(filter, updateApprove);
+            const result = await jobOffers.updateOne(filter, updateApprove);
             res.send(result);
         })
 
