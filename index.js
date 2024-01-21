@@ -197,11 +197,9 @@ async function run() {
             const cursor = jobOffers.find();
             const result = await cursor.toArray();
             res.send(result);
-
         })
 
         app.get('/job/:id', async (req, res) => {
-
             const id = req.params.id;
             const query = { _id: new ObjectId(id) }
             const result = await jobOffers.findOne(query);
@@ -233,7 +231,6 @@ async function run() {
         })
 
         app.delete('/job/:id', async (req, res) => {
-
             const id = req.params.id;
             const query = { _id: new ObjectId(id) }
             const result = await jobOffers.deleteOne(query);
