@@ -77,7 +77,7 @@ async function run() {
         const news = client.db('cseaa').collection('news');
         //for reading news
         app.get('/news', async (req, res) => {
-            const cursor = news.find();
+            const cursor = news.find().sort({ createdAt: -1 });
             const result = await cursor.toArray();
             res.send(result);
         })
@@ -135,7 +135,7 @@ async function run() {
         const article = client.db('cseaa').collection('article');
         //for reading article
         app.get('/article', async (req, res) => {
-            const cursor = article.find();
+            const cursor = article.find().sort({ createdAt: -1 });
             const result = await cursor.toArray();
             res.send(result);
         })
@@ -194,7 +194,7 @@ async function run() {
         const jobOffers = client.db('cseaa').collection('job');
 
         app.get('/job', async (req, res) => {
-            const cursor = jobOffers.find();
+            const cursor = jobOffers.find().sort({ createdAt: -1 });
             const result = await cursor.toArray();
             res.send(result);
         })
@@ -250,6 +250,110 @@ async function run() {
             const result = await jobOffers.updateOne(filter, updateApprove);
             res.send(result);
         })
+
+        //story section
+        //---------------
+        const storyCollection = client.db('cseaa').collection('story');
+
+        app.get('/story', async (req, res) => {
+            const cursor = storyCollection.find().sort({ createdAt: -1 });
+            const result = await cursor.toArray();
+            res.send(result);
+        })
+
+        app.post('/story', async (req, res) => {
+            const newStory = req.body;
+            console.log(newStory);
+            const result = await storyCollection.insertOne(newStory);
+            res.send(result);
+
+        })
+        //   //for deleting
+
+        app.delete('/story/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: new ObjectId(id) }
+            const result = await storyCollection.deleteOne(query);
+            res.send(result);
+            console.log(id);
+        })
+
+
+
+        ///event section
+        const eventCollection = client.db('cseaa').collection('event');
+
+        // Create Data
+        app.post('/event', async (req, res) => {
+
+            const newEvent = req.body;
+            console.log(newEvent);
+            const result = await eventCollection.insertOne(newEvent);
+            res.send(result);
+        })
+
+        // Read Data
+
+        app.get('/event', async (req, res) => {
+            const cursor = eventCollection.find().sort({ createdAt: -1 });
+            const result = await cursor.toArray();
+            res.send(result);
+        })
+
+        // Delete
+        app.delete('/event/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: new ObjectId(id) }
+            const result = await eventCollection.deleteOne(query);
+            res.send(result);
+        })
+
+        // Update
+        app.get('/event/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: new ObjectId(id) }
+            const result = await eventCollection.findOne(query);
+            res.send(result);
+
+        })
+
+        app.put('/event/:id', async (req, res) => {
+            const id = req.params.id;
+            const filter = { _id: new ObjectId(id) };
+            const options = { upsert: true };
+            const updatedEvent = req.body;
+            const event = {
+                $set: {
+                    title: updatedEvent.title,
+                    type: updatedEvent.type,
+                    description: updatedEvent.description,
+                    startDate: updatedEvent.startDate,
+                    endDate: updatedEvent.endDate,
+                }
+            }
+
+            const result = await eventCollection.updateOne(filter, event, options);
+            res.send(result);
+
+
+
+        })
+        //for admin approval 
+        app.patch('/event/:id', async (req, res) => {
+            const id = req.params.id;
+            const filter = { _id: new ObjectId(id) };
+            const eventApprove = req.body;
+            console.log(eventApprove);
+            const updateApprove = {
+                $set: {
+                    approval: eventApprove.approval
+                }
+            };
+            const result = await eventCollection.updateOne(filter, updateApprove);
+            res.send(result);
+        })
+
+
 
 
         // Send a ping to confirm a successful connection
