@@ -88,6 +88,8 @@ async function run() {
             const result = await news.insertOne(newNews);
             res.send(result);
         })
+
+
         //for deleting
         app.delete('/news/:id', async (req, res) => {
             const id = req.params.id;
@@ -109,6 +111,7 @@ async function run() {
             const updatedNews = req.body;
             const update = {
                 $set: {
+                    title: updatedNews.title,
                     post: updatedNews.post
                 }
             }
@@ -129,6 +132,24 @@ async function run() {
             const result = await news.updateOne(filter, updateApprove);
             res.send(result);
         })
+
+
+
+        //comment
+        const comments = client.db('cseaa').collection('comments');
+        app.post('/comments', async (req, res) => {
+            const newComments = req.body;
+            console.log(newComments);
+            const result = await comments.insertOne(newComments);
+            res.send(result);
+        })
+        app.get('/comments', async (req, res) => {
+            const cursor = comments.find();
+            const result = await cursor.toArray();
+            res.send(result);
+        })
+
+
 
         //article section
         //-----------
@@ -334,8 +355,6 @@ async function run() {
 
             const result = await eventCollection.updateOne(filter, event, options);
             res.send(result);
-
-
 
         })
         //for admin approval 
