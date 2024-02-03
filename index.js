@@ -148,34 +148,28 @@ async function run() {
             const result = await cursor.toArray();
             res.send(result);
         })
-        // Endpoint to delete a single comment by _id
-        app.delete('/comments/:commentId', async (req, res) => {
-            const commentId = req.params.commentId;
 
-            try {
-                // Delete the comment by _id
-                const result = await comments.deleteOne({ _id: ObjectId(commentId) });
-                res.json(result);
-            } catch (error) {
-                console.error('Error deleting comment:', error);
-                res.status(500).json({ error: 'Internal Server Error' });
-            }
+        // Endpoint to delete a single comment by _id
+        app.delete('/comments/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: new ObjectId(id) }
+            const result = await comments.deleteOne(query);
+            res.send(result);
         });
 
         // Endpoint to delete comments associated with a news ID
-        app.delete('/comments/:newsId', async (req, res) => {
-            const newsId = req.params.newsId;
+        // app.delete('/comments/:newsId', async (req, res) => {
+        //     const newsId = req.params.newsId;
 
-            try {
-                // Delete comments associated with the news ID
-                const result = await comments.deleteMany({ newsId });
-                res.json(result);
-            } catch (error) {
-                console.error('Error deleting comments:', error);
-                res.status(500).json({ error: 'Internal Server Error' });
-            }
-        });
-
+        //     try {
+        //         // Delete comments associated with the news ID
+        //         const result = await comments.deleteMany({ newsId });
+        //         res.json(result);
+        //     } catch (error) {
+        //         console.error('Error deleting comments:', error);
+        //         res.status(500).json({ error: 'Internal Server Error' });
+        //     }
+        // });
 
         //article section
         //-----------
