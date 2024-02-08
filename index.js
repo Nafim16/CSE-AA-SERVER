@@ -149,27 +149,33 @@ async function run() {
             res.send(result);
         })
 
-        // Endpoint to delete a single comment by _id
+        //Endpoint to delete a single comment by _id
         app.delete('/comments/:id', async (req, res) => {
+            console.log('single comment');
             const id = req.params.id;
             const query = { _id: new ObjectId(id) }
+            console.log(query);
             const result = await comments.deleteOne(query);
             res.send(result);
         });
 
         // Endpoint to delete comments associated with a news ID
-        // app.delete('/comments/:newsId', async (req, res) => {
-        //     const newsId = req.params.newsId;
+        app.delete('/comments/:newsId', async (req, res) => {
+            console.log('many comment');
+            const newsId = req.params.newsId;
+            
+            try {
+                // Delete comments associated with the news ID
+                const result = await comments.deleteMany({ newsId });
+                console.log(result, newsId);
+                res.json(result);
+            } catch (error) {
+                console.error('Error deleting comments:', error);
+                res.status(500).json({ error: 'Internal Server Error' });
+            }
+        });
 
-        //     try {
-        //         // Delete comments associated with the news ID
-        //         const result = await comments.deleteMany({ newsId });
-        //         res.json(result);
-        //     } catch (error) {
-        //         console.error('Error deleting comments:', error);
-        //         res.status(500).json({ error: 'Internal Server Error' });
-        //     }
-        // });
+         
 
         //article section
         //-----------
