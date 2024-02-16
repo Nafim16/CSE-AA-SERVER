@@ -134,7 +134,6 @@ async function run() {
         })
 
 
-
         //comment
         const comments = client.db('cseaa').collection('comments');
         app.post('/comments', async (req, res) => {
@@ -163,7 +162,6 @@ async function run() {
         app.delete('/comments/:newsId', async (req, res) => {
             console.log('many comment');
             const newsId = req.params.newsId;
-            
             try {
                 // Delete comments associated with the news ID
                 const result = await comments.deleteMany({ newsId });
@@ -175,7 +173,7 @@ async function run() {
             }
         });
 
-         
+
 
         //article section
         //-----------
@@ -397,6 +395,39 @@ async function run() {
             const result = await eventCollection.updateOne(filter, updateApprove);
             res.send(result);
         })
+
+
+
+        //Event Reg
+        const EventReg = client.db('cseaa').collection('eventReg');
+        app.post('/reg', async (req, res) => {
+            const newEventReg = req.body;
+            console.log(newEventReg);
+            const result = await EventReg.insertOne(newEventReg);
+            res.send(result);
+        })
+
+        app.get('/reg', async (req, res) => {
+            const cursor = EventReg.find();
+            const result = await cursor.toArray();
+            res.send(result);
+        })
+
+
+        // Endpoint to delete reg associated with a event ID
+        app.delete('/reg/:newsId', async (req, res) => {
+            console.log('many comment');
+            const eventId = req.params.eventId;
+            try {
+                // Delete comments associated with the news ID
+                const result = await EventReg.deleteMany({ eventId });
+                console.log(result, eventId);
+                res.json(result);
+            } catch (error) {
+                console.error('Error deleting comments:', error);
+                res.status(500).json({ error: 'Internal Server Error' });
+            }
+        });
 
 
 
