@@ -296,6 +296,38 @@ async function run() {
             res.send(result);
         })
 
+        //Event Reg
+        const jobApply = client.db('cseaa').collection('jobApply');
+        app.post('/apply', async (req, res) => {
+            const newJobApply = req.body;
+            console.log(newJobApply);
+            const result = await jobApply.insertOne(newJobApply);
+            res.send(result);
+        })
+
+        app.get('/apply', async (req, res) => {
+            const cursor = jobApply.find();
+            const result = await cursor.toArray();
+            res.send(result);
+        })
+
+
+        // Endpoint to delete reg associated with a event ID
+        app.delete('/apply/:newsId', async (req, res) => {
+            console.log('many comment');
+            const jobId = req.params.jobId;
+            try {
+                // Delete comments associated with the news ID
+                const result = await jobApply.deleteMany({ jobId });
+                console.log(result, jobId);
+                res.json(result);
+            } catch (error) {
+                console.error('Error deleting comments:', error);
+                res.status(500).json({ error: 'Internal Server Error' });
+            }
+        });
+
+
         //story section
         //---------------
         const storyCollection = client.db('cseaa').collection('story');
@@ -338,7 +370,6 @@ async function run() {
         })
 
         // Read Data
-
         app.get('/event', async (req, res) => {
             const cursor = eventCollection.find().sort({ createdAt: -1 });
             const result = await cursor.toArray();
@@ -359,7 +390,6 @@ async function run() {
             const query = { _id: new ObjectId(id) }
             const result = await eventCollection.findOne(query);
             res.send(result);
-
         })
 
         app.put('/event/:id', async (req, res) => {
