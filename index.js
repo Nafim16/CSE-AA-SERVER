@@ -199,7 +199,8 @@ async function run() {
             const update = {
                 $set: {
                     title: updatedArticle.title,
-                    details: updatedArticle.details
+                    details: updatedArticle.details,
+                    photoUrl: updatedArticle.photoUrl
                 }
             }
             const result = await article.updateOne(filter, update, options);
@@ -400,7 +401,7 @@ async function run() {
             const event = {
                 $set: {
                     title: updatedEvent.title,
-                    type: updatedEvent.type,
+                    photoUrl: updatedEvent.photoUrl,
                     description: updatedEvent.description,
                     startDate: updatedEvent.startDate,
                     endDate: updatedEvent.endDate,
