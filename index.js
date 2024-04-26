@@ -3,6 +3,8 @@ const cors = require('cors');
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const app = express();
 const port = process.env.PORT || 5000;
+const jwt = require('jsonwebtoken');
+const cookieParser = require('cookie-parser');
 require('dotenv').config();
 
 //middleware
@@ -10,8 +12,10 @@ require('dotenv').config();
 app.use(express.json());
 
 app.use(cors({
-  origin: 'https://caalu.me'
+    origin: ['http://localhost:3000'],
+    credentials: true
 }));
+app.use(cookieParser());
 
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.wlgklm6.mongodb.net/?retryWrites=true&w=majority`;
 
@@ -24,11 +28,56 @@ const client = new MongoClient(uri, {
     }
 });
 
+
+//middleware for jwt
+const logger = async (req, res, next) => {
+    console.log("called:", req.hostname, req.originalUrl);
+    next();
+}
+
+const verifyToken = async (req, res, next) => {
+    const token = req.cookies?.token;
+    console.log('value of token in middleware', token);
+    if (!token) {
+        return res.status(401).send({ message: 'Not Authorized' })
+    }
+    jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, decoded) => {
+        //error
+        if (err) {
+            console.log(err);
+            return res.status(401).send({ message: 'Not Authorized' })
+        }
+        //if token is valid then token will be decoded
+        console.log('value in the token:', decoded);
+        req.user = decoded;
+        next();
+    })
+
+}
+
 async function run() {
     try {
         // Connect the client to the server	(optional starting in v4.7)
         await client.connect();
 
+        //auth related api
+        app.post('/jwt', logger, async (req, res) => {
+            const user = req.body;
+            console.log(user);
+            const token = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '10s' });
+            res
+                .cookie('token', token, {
+                    httpOnly: true,
+                    secure: false
+                })
+                .send({ success: true })
+        })
+
+        app.post('/logout', async (req, res) => {
+            const user = req.body;
+            console.log('logging out', user);
+            res.clearCookie('token', { maxAge: 0 }).send({ success: true });
+        })
 
         //user section
         //------------
@@ -78,7 +127,9 @@ async function run() {
         //------------
         const news = client.db('cseaa').collection('news');
         //for reading news
-        app.get('/news', async (req, res) => {
+        app.get('/news', logger, verifyToken, async (req, res) => {
+            // console.log('tok tok token:', req.cookies.token);
+            console.log('from valid token:', req.user);
             const cursor = news.find().sort({ createdAt: -1 });
             const result = await cursor.toArray();
             res.send(result);
@@ -181,7 +232,7 @@ async function run() {
         //-----------
         const article = client.db('cseaa').collection('article');
         //for reading article
-        app.get('/article', async (req, res) => {
+        app.get('/article', logger, async (req, res) => {
             const cursor = article.find().sort({ createdAt: -1 });
             const result = await cursor.toArray();
             res.send(result);
