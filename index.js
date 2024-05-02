@@ -12,7 +12,7 @@ require('dotenv').config();
 app.use(express.json());
 
 app.use(cors({
-    origin: ['http://localhost:3000','https://caalu.me' ],
+    origin: ['http://localhost:3000'],
     credentials: true
 }));
 app.use(cookieParser());
@@ -64,7 +64,7 @@ async function run() {
         app.post('/jwt', logger, async (req, res) => {
             const user = req.body;
             console.log(user);
-            const token = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '10s' });
+            const token = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '1h' });
             res
                 .cookie('token', token, {
                     httpOnly: true,
@@ -135,7 +135,7 @@ async function run() {
             res.send(result);
         })
         //for creating news
-        app.post('/news', async (req, res) => {
+        app.post('/news',verifyToken, async (req, res) => {
             const newNews = req.body;
             console.log(newNews);
             const result = await news.insertOne(newNews);
@@ -144,20 +144,20 @@ async function run() {
 
 
         //for deleting
-        app.delete('/news/:id', async (req, res) => {
+        app.delete('/news/:id',verifyToken, async (req, res) => {
             const id = req.params.id;
             const query = { _id: new ObjectId(id) }
             const result = await news.deleteOne(query);
             res.send(result);
         })
         //for updating
-        app.get('/news/:id', async (req, res) => {
+        app.get('/news/:id',verifyToken, async (req, res) => {
             const id = req.params.id;
             const query = { _id: new ObjectId(id) }
             const result = await news.findOne(query);
             res.send(result);
         })
-        app.put('/news/:id', async (req, res) => {
+        app.put('/news/:id',verifyToken, async (req, res) => {
             const id = req.params.id;
             const filter = { _id: new ObjectId(id) }
             const options = { upsert: true };
@@ -172,7 +172,7 @@ async function run() {
             res.send(result);
         })
         //for admin approval 
-        app.patch('/news/:id', async (req, res) => {
+        app.patch('/news/:id',verifyToken, async (req, res) => {
             const id = req.params.id;
             const filter = { _id: new ObjectId(id) };
             const newsApprove = req.body;
