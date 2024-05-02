@@ -135,7 +135,7 @@ async function run() {
             res.send(result);
         })
         //for creating news
-        app.post('/news',verifyToken, async (req, res) => {
+        app.post('/news', verifyToken, async (req, res) => {
             const newNews = req.body;
             console.log(newNews);
             const result = await news.insertOne(newNews);
@@ -144,20 +144,20 @@ async function run() {
 
 
         //for deleting
-        app.delete('/news/:id',verifyToken, async (req, res) => {
+        app.delete('/news/:id', verifyToken, async (req, res) => {
             const id = req.params.id;
             const query = { _id: new ObjectId(id) }
             const result = await news.deleteOne(query);
             res.send(result);
         })
         //for updating
-        app.get('/news/:id',verifyToken, async (req, res) => {
+        app.get('/news/:id', verifyToken, async (req, res) => {
             const id = req.params.id;
             const query = { _id: new ObjectId(id) }
             const result = await news.findOne(query);
             res.send(result);
         })
-        app.put('/news/:id',verifyToken, async (req, res) => {
+        app.put('/news/:id', verifyToken, async (req, res) => {
             const id = req.params.id;
             const filter = { _id: new ObjectId(id) }
             const options = { upsert: true };
@@ -172,7 +172,7 @@ async function run() {
             res.send(result);
         })
         //for admin approval 
-        app.patch('/news/:id',verifyToken, async (req, res) => {
+        app.patch('/news/:id', verifyToken, async (req, res) => {
             const id = req.params.id;
             const filter = { _id: new ObjectId(id) };
             const newsApprove = req.body;
@@ -232,7 +232,7 @@ async function run() {
         //-----------
         const article = client.db('cseaa').collection('article');
         //for reading article
-        app.get('/article', logger, async (req, res) => {
+        app.get('/article',  async (req, res) => {
             const cursor = article.find().sort({ createdAt: -1 });
             const result = await cursor.toArray();
             res.send(result);
@@ -244,7 +244,7 @@ async function run() {
             const result = await article.findOne(query);
             res.send(result);
         })
-        app.put('/article/:id', async (req, res) => {
+        app.put('/article/:id',verifyToken, async (req, res) => {
             const id = req.params.id;
             const filter = { _id: new ObjectId(id) }
             const options = { upsert: true };
@@ -261,21 +261,21 @@ async function run() {
         })
 
         //for creating article
-        app.post('/article', async (req, res) => {
+        app.post('/article',verifyToken, async (req, res) => {
             const newArticle = req.body;
             console.log(newArticle);
             const result = await article.insertOne(newArticle);
             res.send(result);
         })
         //for deleting
-        app.delete('/article/:id', async (req, res) => {
+        app.delete('/article/:id',verifyToken, async (req, res) => {
             const id = req.params.id;
             const query = { _id: new ObjectId(id) }
             const result = await article.deleteOne(query);
             res.send(result);
         })
         //for admin approval 
-        app.patch('/article/:id', async (req, res) => {
+        app.patch('/article/:id',verifyToken, async (req, res) => {
             const id = req.params.id;
             const filter = { _id: new ObjectId(id) };
             const articleApprove = req.body;
