@@ -83,7 +83,7 @@ async function run() {
         //------------
         const user = client.db('cseaa').collection('user');
         //for creating user
-        app.post('/user', async (req, res) => {
+        app.post('/user', verifyToken, async (req, res) => {
             const newUser = req.body;
             console.log(newUser);
             const result = await user.insertOne(newUser);
@@ -96,14 +96,14 @@ async function run() {
             res.send(result);
         })
         //for updating
-        app.get('/user/:id', async (req, res) => {
+        app.get('/user/:id', verifyToken, async (req, res) => {
             const id = req.params.id;
             const query = { _id: new ObjectId(id) }
             const result = await user.findOne(query);
             res.send(result);
         })
 
-        app.put('/user/:id', async (req, res) => {
+        app.put('/user/:id', verifyToken, async (req, res) => {
             const id = req.params.id;
             const filter = { _id: new ObjectId(id) }
             const options = { upsert: true };
@@ -232,7 +232,7 @@ async function run() {
         //-----------
         const article = client.db('cseaa').collection('article');
         //for reading article
-        app.get('/article',  async (req, res) => {
+        app.get('/article', async (req, res) => {
             const cursor = article.find().sort({ createdAt: -1 });
             const result = await cursor.toArray();
             res.send(result);
@@ -244,7 +244,7 @@ async function run() {
             const result = await article.findOne(query);
             res.send(result);
         })
-        app.put('/article/:id',verifyToken, async (req, res) => {
+        app.put('/article/:id', verifyToken, async (req, res) => {
             const id = req.params.id;
             const filter = { _id: new ObjectId(id) }
             const options = { upsert: true };
@@ -261,21 +261,21 @@ async function run() {
         })
 
         //for creating article
-        app.post('/article',verifyToken, async (req, res) => {
+        app.post('/article', verifyToken, async (req, res) => {
             const newArticle = req.body;
             console.log(newArticle);
             const result = await article.insertOne(newArticle);
             res.send(result);
         })
         //for deleting
-        app.delete('/article/:id',verifyToken, async (req, res) => {
+        app.delete('/article/:id', verifyToken, async (req, res) => {
             const id = req.params.id;
             const query = { _id: new ObjectId(id) }
             const result = await article.deleteOne(query);
             res.send(result);
         })
         //for admin approval 
-        app.patch('/article/:id',verifyToken, async (req, res) => {
+        app.patch('/article/:id', verifyToken, async (req, res) => {
             const id = req.params.id;
             const filter = { _id: new ObjectId(id) };
             const articleApprove = req.body;
@@ -298,13 +298,13 @@ async function run() {
             res.send(result);
         })
 
-        app.get('/job/:id', async (req, res) => {
+        app.get('/job/:id', verifyToken, async (req, res) => {
             const id = req.params.id;
             const query = { _id: new ObjectId(id) }
             const result = await jobOffers.findOne(query);
             res.send(result);
         })
-        app.put('/job/:id', async (req, res) => {
+        app.put('/job/:id', verifyToken, async (req, res) => {
             const id = req.params.id;
             const filter = { _id: new ObjectId(id) }
             const options = { upsert: true };
@@ -322,21 +322,21 @@ async function run() {
             res.send(result);
         })
 
-        app.post('/job', async (req, res) => {
+        app.post('/job', verifyToken, async (req, res) => {
             const newJob = req.body;
             console.log(newJob);
             const result = await jobOffers.insertOne(newJob);
             res.send(result);
         })
 
-        app.delete('/job/:id', async (req, res) => {
+        app.delete('/job/:id', verifyToken, async (req, res) => {
             const id = req.params.id;
             const query = { _id: new ObjectId(id) }
             const result = await jobOffers.deleteOne(query);
             res.send(result);
         })
         //for admin approval 
-        app.patch('/job/:id', async (req, res) => {
+        app.patch('/job/:id', verifyToken, async (req, res) => {
             const id = req.params.id;
             const filter = { _id: new ObjectId(id) };
             const jobApprove = req.body;
@@ -352,14 +352,14 @@ async function run() {
 
         //Event Reg
         const jobApply = client.db('cseaa').collection('jobApply');
-        app.post('/apply', async (req, res) => {
+        app.post('/apply', verifyToken, async (req, res) => {
             const newJobApply = req.body;
             console.log(newJobApply);
             const result = await jobApply.insertOne(newJobApply);
             res.send(result);
         })
 
-        app.get('/apply', async (req, res) => {
+        app.get('/apply', verifyToken, async (req, res) => {
             const cursor = jobApply.find();
             const result = await cursor.toArray();
             res.send(result);
@@ -392,7 +392,7 @@ async function run() {
             res.send(result);
         })
 
-        app.post('/story', async (req, res) => {
+        app.post('/story', verifyToken, async (req, res) => {
             const newStory = req.body;
             console.log(newStory);
             const result = await storyCollection.insertOne(newStory);
@@ -401,7 +401,7 @@ async function run() {
         })
         //   //for deleting
 
-        app.delete('/story/:id', async (req, res) => {
+        app.delete('/story/:id', verifyToken, async (req, res) => {
             const id = req.params.id;
             const query = { _id: new ObjectId(id) }
             const result = await storyCollection.deleteOne(query);
@@ -415,7 +415,7 @@ async function run() {
         const eventCollection = client.db('cseaa').collection('event');
 
         // Create Data
-        app.post('/event', async (req, res) => {
+        app.post('/event', verifyToken, async (req, res) => {
 
             const newEvent = req.body;
             console.log(newEvent);
@@ -431,7 +431,7 @@ async function run() {
         })
 
         // Delete
-        app.delete('/event/:id', async (req, res) => {
+        app.delete('/event/:id', verifyToken, async (req, res) => {
             const id = req.params.id;
             const query = { _id: new ObjectId(id) }
             const result = await eventCollection.deleteOne(query);
@@ -446,7 +446,7 @@ async function run() {
             res.send(result);
         })
 
-        app.put('/event/:id', async (req, res) => {
+        app.put('/event/:id', verifyToken, async (req, res) => {
             const id = req.params.id;
             const filter = { _id: new ObjectId(id) };
             const options = { upsert: true };
@@ -466,7 +466,7 @@ async function run() {
 
         })
         //for admin approval 
-        app.patch('/event/:id', async (req, res) => {
+        app.patch('/event/:id', verifyToken, async (req, res) => {
             const id = req.params.id;
             const filter = { _id: new ObjectId(id) };
             const eventApprove = req.body;
@@ -484,14 +484,14 @@ async function run() {
 
         //Event Reg
         const EventReg = client.db('cseaa').collection('eventReg');
-        app.post('/reg', async (req, res) => {
+        app.post('/reg', verifyToken, async (req, res) => {
             const newEventReg = req.body;
             console.log(newEventReg);
             const result = await EventReg.insertOne(newEventReg);
             res.send(result);
         })
 
-        app.get('/reg', async (req, res) => {
+        app.get('/reg', verifyToken, async (req, res) => {
             const cursor = EventReg.find();
             const result = await cursor.toArray();
             res.send(result);
