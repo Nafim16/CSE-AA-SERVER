@@ -12,7 +12,7 @@ require('dotenv').config();
 app.use(express.json());
 
 app.use(cors({
-    origin: ['http://caalu.me', 'http://localhost:3000'],
+    origin: ['http://caalu.me', 'http://cse-aa.vercel.app', 'https://cse-aa-git-main-nafims-projects.vercel.app/', 'https://cse-aa-nafims-projects.vercel.app/'],
     credentials: true
 }));
 app.use(cookieParser());
