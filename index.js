@@ -12,7 +12,7 @@ require('dotenv').config();
 app.use(express.json());
 
 app.use(cors({
-    origin: ['http://caalu.me'],
+    origin: ['http://caalu.me', 'http://localhost:3000'],
     credentials: true
 }));
 app.use(cookieParser());
@@ -68,7 +68,7 @@ async function run() {
             res
                 .cookie('token', token, {
                     httpOnly: true,
-                    secure: false
+                    secure: true
                 })
                 .send({ success: true })
         })
