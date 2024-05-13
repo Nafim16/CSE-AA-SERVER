@@ -13,7 +13,7 @@ app.use(express.json());
 // app.use(cors());
 
 app.use(cors({
-    origin: ['http://localhost:3000','https://cse-aa-server.onrender.com', 'http://cse-aa.vercel.app', 'https://cse-aa-git-main-nafims-projects.vercel.app/', 'https://cse-aa-nafims-projects.vercel.app/'],
+    origin: ['http://localhost:3000', 'https://cse-aa.onrender.com', 'https://cse-aa-server.onrender.com', 'http://cse-aa.vercel.app', 'https://cse-aa-git-main-nafims-projects.vercel.app/', 'https://cse-aa-nafims-projects.vercel.app/'],
     credentials: true,
     // origin: ['http://localhost:3000'],
 }));
