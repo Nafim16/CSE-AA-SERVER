@@ -8,14 +8,11 @@ const cookieParser = require('cookie-parser');
 require('dotenv').config();
 
 //middleware
-
-app.use(express.json());
-app.use(cors());
-// app.use(cors({
-//     origin: ['http://caalu.me', 'http://cse-aa.vercel.app', 'https://cse-aa-git-main-nafims-projects.vercel.app/', 'https://cse-aa-nafims-projects.vercel.app/'],
-//     credentials: true,
-// }));
 app.use(cookieParser());
+app.use(express.json());
+// app.use(cors());
+
+app.use(cors());
 
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.wlgklm6.mongodb.net/?retryWrites=true&w=majority`;
 
@@ -533,6 +530,12 @@ app.get('/', (req, res) => {
     res.send('server  is running');
 })
 
+
+// app.use(cors({
+//     // origin: ['http://caalu.me', 'http://cse-aa.vercel.app', 'https://cse-aa-git-main-nafims-projects.vercel.app/', 'https://cse-aa-nafims-projects.vercel.app/'],
+//     credentials: true,
+//     origin: ['http://localhost:3000'],
+// }));
 app.listen(port, () => {
     console.log(`Current port: ${port}`);
 })
