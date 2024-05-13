@@ -13,7 +13,8 @@ app.use(express.json());
 
 app.use(cors({
     origin: ['http://caalu.me', 'http://cse-aa.vercel.app', 'https://cse-aa-git-main-nafims-projects.vercel.app/', 'https://cse-aa-nafims-projects.vercel.app/'],
-    credentials: true
+    credentials: true,
+    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
 }));
 app.use(cookieParser());
 
