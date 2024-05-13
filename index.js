@@ -36,30 +36,45 @@ const logger = async (req, res, next) => {
     next();
 }
 
-const verifyToken = async (req, res, next) => {
-    const token = req.cookies?.token;
-    console.log('value of token in middleware', token);
-    if (!token) {
-        return res.status(401).send({ message: 'Not Authorized' })
-    }
-    jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, decoded) => {
-        //error
-        if (err) {
-            console.log(err);
-            return res.status(401).send({ message: 'Not Authorized' })
-        }
-        //if token is valid then token will be decoded
-        console.log('value in the token:', decoded);
-        req.user = decoded;
-        next();
-    })
+// const verifyToken = async (req, res, next) => {
+//     const token = req.cookies?.token;
+//     console.log('value of token in middleware', token);
+//     if (!token) {
+//         return res.status(401).send({ message: 'Not Authorized' })
+//     }
+//     jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, decoded) => {
+//         //error
+//         if (err) {
+//             console.log(err);
+//             return res.status(401).send({ message: 'Not Authorized' })
+//         }
+//         //if token is valid then token will be decoded
+//         console.log('value in the token:', decoded);
+//         req.user = decoded;
+//         next();
+//     })
 
-}
+// }
 
 async function run() {
     try {
         // Connect the client to the server	(optional starting in v4.7)
         await client.connect();
+
+        const verifyToken = (req, res, next) => {
+            // console.log('inside verify token', req.headers.authorization);
+            if (!req.headers.authorization) {
+              return res.status(401).send({ message: 'unauthorized access' });
+            }
+            const token = req.headers.authorization.split(' ')[1];
+            jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, decoded) => {
+              if (err) {
+                return res.status(401).send({ message: 'unauthorized access' })
+              }
+              req.decoded = decoded;
+              next();
+            })
+          }
 
         //auth related api
         app.post('/jwt', logger, async (req, res) => {
