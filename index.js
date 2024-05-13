@@ -8,13 +8,13 @@ const cookieParser = require('cookie-parser');
 require('dotenv').config();
 
 //middleware
-// app.use(cors());
-app.use(express.json());
 
-app.use(cors({
-    origin: ['http://caalu.me', 'http://cse-aa.vercel.app', 'https://cse-aa-git-main-nafims-projects.vercel.app/', 'https://cse-aa-nafims-projects.vercel.app/'],
-    credentials: true,
-}));
+app.use(express.json());
+app.use(cors());
+// app.use(cors({
+//     origin: ['http://caalu.me', 'http://cse-aa.vercel.app', 'https://cse-aa-git-main-nafims-projects.vercel.app/', 'https://cse-aa-nafims-projects.vercel.app/'],
+//     credentials: true,
+// }));
 app.use(cookieParser());
 
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.wlgklm6.mongodb.net/?retryWrites=true&w=majority`;
@@ -61,7 +61,7 @@ async function run() {
         await client.connect();
 
         //auth related api
-        app.post('/jwt', logger,verifyToken, async (req, res) => {
+        app.post('/jwt', logger, async (req, res) => {
             const user = req.body;
             console.log(user);
             const token = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '1h' });
