@@ -14,7 +14,6 @@ app.use(express.json());
 app.use(cors({
     origin: ['http://caalu.me', 'http://cse-aa.vercel.app', 'https://cse-aa-git-main-nafims-projects.vercel.app/', 'https://cse-aa-nafims-projects.vercel.app/'],
     credentials: true,
-    methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE']
 }));
 app.use(cookieParser());
 
@@ -61,14 +60,8 @@ async function run() {
         // Connect the client to the server	(optional starting in v4.7)
         await client.connect();
 
-        app.options('/jwt', cors({
-            origin: ['http://caalu.me', 'http://cse-aa.vercel.app', 'https://cse-aa-git-main-nafims-projects.vercel.app/', 'https://cse-aa-nafims-projects.vercel.app/'],
-            credentials: true,
-            methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'], // Adjust methods as needed
-        }));
-
         //auth related api
-        app.post('/jwt', logger, verifyToken, async (req, res) => {
+        app.post('/jwt', logger,verifyToken, async (req, res) => {
             const user = req.body;
             console.log(user);
             const token = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '1h' });
