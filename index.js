@@ -15,7 +15,7 @@ app.use(express.json());
 app.use(helmet());
 
 app.use(cors({
-    origin: ['http://localhost:3001', 'https://cse-aa.onrender.com', 'https://cse-aa-server.onrender.com', 'https://cse-aa.vercel.app', 'https://cse-aa-git-main-nafims-projects.vercel.app/', 'https://cse-aa-nafims-projects.vercel.app/'],
+    origin: ['http://localhost:3001', 'https://caalu.me','https://www.caalu.me', 'https://cse-aa.onrender.com', 'https://cse-aa.vercel.app', 'https://cse-aa-git-main-nafims-projects.vercel.app/', 'https://cse-aa-nafims-projects.vercel.app/'],
     credentials: true,
     // origin: ['http://localhost:3000'],
 }));
