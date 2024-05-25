@@ -122,7 +122,7 @@ async function run() {
             res.send(result);
         })
         //for reading user
-        app.get('/user', verifyToken, verifyAdmin, async (req, res) => {
+        app.get('/user', verifyAdmin, async (req, res) => {
             const cursor = user.find();
             const result = await cursor.toArray();
             res.send(result);
