@@ -15,7 +15,7 @@ app.use(express.json());
 app.use(helmet());
 
 app.use(cors({
-    origin: ['http://localhost:3000', 'https://caalu.me','https://www.caalu.me', 'https://cse-aa.onrender.com', 'https://cse-aa.vercel.app', 'https://cse-aa-git-main-nafims-projects.vercel.app/', 'https://cse-aa-nafims-projects.vercel.app/'],
+    origin: ['http://localhost:3000', 'https://caalu.me', 'https://www.caalu.me', 'https://cse-aa.onrender.com', 'https://cse-aa.vercel.app', 'https://cse-aa-git-main-nafims-projects.vercel.app/', 'https://cse-aa-nafims-projects.vercel.app/'],
     credentials: true,
     // origin: ['http://localhost:3000'],
 }));
@@ -57,6 +57,19 @@ const verifyToken = async (req, res, next) => {
     })
 
 }
+
+
+const verifyAdmin = async (req, res, next) => {
+    const email = req.decoded.email;
+    const query = { email: email };
+    const user = await userCollection.findOne(query);
+    const isAdmin = user?.role === 'superAdmin';
+    if (!isAdmin) {
+        return res.status(403).send({ message: 'Forbidden access' });
+    }
+    next();
+}
+
 
 async function run() {
     try {
@@ -109,7 +122,7 @@ async function run() {
             res.send(result);
         })
         //for reading user
-        app.get('/user', async (req, res) => {
+        app.get('/user', verifyToken, verifyAdmin, async (req, res) => {
             const cursor = user.find();
             const result = await cursor.toArray();
             res.send(result);

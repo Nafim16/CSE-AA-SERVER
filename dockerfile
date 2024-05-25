@@ -3,10 +3,16 @@ FROM node:18.16.0-bookworm-slim
 
 WORKDIR /app
 
+ENV NODE_ENV production
+
+COPY package*.json ./
+
+RUN npm install
+
 COPY . .
 
-RUN bash -c "npm install"
+RUN npm install -g pm2
 
 EXPOSE 5000
 
-CMD ["node", "index.js"]
+CMD ["pm2-runtime", "index.js"]
