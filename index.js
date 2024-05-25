@@ -64,8 +64,8 @@ const verifyAdmin = async (req, res, next) => {
     const query = { email: email };
     const user = await userCollection.findOne(query);
     const isAdmin = user?.role === 'superAdmin';
-    if (!isAdmin) {
-        return res.status(403).send({ message: 'Forbidden access' });
+    if (!isAdmin){
+        return res.status(403).send({message:'Forbidden access'});
     }
     next();
 }
@@ -122,7 +122,7 @@ async function run() {
             res.send(result);
         })
         //for reading user
-        app.get('/user', verifyAdmin, async (req, res) => {
+        app.get('/user', async (req, res) => {
             const cursor = user.find();
             const result = await cursor.toArray();
             res.send(result);
