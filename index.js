@@ -59,17 +59,6 @@ const verifyToken = async (req, res, next) => {
 }
 
 
-const verifyAdmin = async (req, res, next) => {
-    const email = req.decoded.email;
-    const query = { email: email };
-    const user = await userCollection.findOne(query);
-    const isAdmin = user?.role === 'superAdmin';
-    if (!isAdmin) {
-        return res.status(403).send({ message: 'Forbidden access' });
-    }
-    next();
-}
-
 
 async function run() {
     try {
@@ -105,11 +94,24 @@ async function run() {
                 .send({ success: true })
         })
 
+
         app.post('/logout', async (req, res) => {
             const user = req.body;
             console.log('logging out', user);
             res.clearCookie('token', { maxAge: 0 }).send({ success: true });
         })
+
+
+        const verifyAdmin = async (req, res, next) => {
+            const email = req.decoded.email;
+            const query = { email: email };
+            const users = await user.findOne(query);
+            const isAdmin = users?.role === 'superAdmin';
+            if (!isAdmin) {
+                return res.status(403).send({ message: 'Forbidden access' });
+            }
+            next();
+        }
 
         //user section
         //------------
