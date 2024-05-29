@@ -137,31 +137,10 @@ async function run() {
             res.send(result);
         })
 
-        // app.put('/user/:id', verifyToken, async (req, res) => {
-        //     const id = req.params.id;
-        //     const filter = { _id: new ObjectId(id) }
-        //     const options = { upsert: true };
-        //     const updatedUser = req.body;
-        //     const update = {
-        //         $set: {
-        //             name: updatedUser.name,
-        //             batch: updatedUser.batch,
-        //             phone: updatedUser.phone,
-        //             gender: updatedUser.gender,
-        //             blood: updatedUser.blood,
-        //             city: updatedUser.city,
-        //             role: updatedUser.role
-        //         }
-        //     }
-        //     const result = await user.updateOne(filter, update, options);
-        //     res.send(result);
-        // })
-
         app.put('/user/:id', verifyToken, async (req, res) => {
             const id = req.params.id;
-            const userId = req.decoded._id;
-            const isSuperAdmin = req.decoded.role === 'superAdmin';
-            const filter = { _id: new ObjectId(id) };
+            const filter = { _id: new ObjectId(id) }
+            const options = { upsert: true };
             const updatedUser = req.body;
             const update = {
                 $set: {
@@ -170,24 +149,13 @@ async function run() {
                     phone: updatedUser.phone,
                     gender: updatedUser.gender,
                     blood: updatedUser.blood,
-                    city: updatedUser.city
+                    city: updatedUser.city,
+                    role: updatedUser.role
                 }
-            };
-        
-            // Allow role update only for super admins
-            if (isSuperAdmin && updatedUser.role) {
-                update.$set.role = updatedUser.role;
             }
-        
-            // Check if the requesting user is the owner of the data or a super admin
-            if (isSuperAdmin || userId === id) {
-                const result = await user.updateOne(filter, update, { upsert: true });
-                res.send(result);
-            } else {
-                res.status(403).send({ message: 'Forbidden access' });
-            }
-        });
-        
+            const result = await user.updateOne(filter, update, options);
+            res.send(result);
+        })
 
         //News Section
         //------------
