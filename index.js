@@ -124,7 +124,7 @@ async function run() {
             res.send(result);
         })
         //for reading user
-        app.get('/user', verifyToken, async (req, res) => {
+        app.get('/user', async (req, res) => {
             const cursor = user.find();
             const result = await cursor.toArray();
             res.send(result);
